@@ -23,7 +23,4 @@ const ins = new Vue({
   template: '<App/>'
 });
 
-console.log(ins.$store)
-console.log(ins.$store.commit)
-
 
