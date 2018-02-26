@@ -1,14 +1,14 @@
 import WebTools from "../libs/WebTools"
 
-const hostname = window.location.hostname;
-
-const domains = {
-    prod:"http://daijlgl.zszzjs.cn",
-};
 const config = {
-    domain,
     apis: {
-        getPlan: "/gl/admin/info",
+        getInfo: "/gl/admin/info",
     }
 };
+export default {
+    getInfo(){
+        const url = 'http://daijlweb.zszzjs.cn'+config.apis.getInfo ;
+        return WebTools.getData( { url } )
+    },
+}
 

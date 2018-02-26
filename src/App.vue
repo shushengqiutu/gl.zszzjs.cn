@@ -75,8 +75,8 @@
               return this.$store.state.project
           }
         },
-        mounted:{
-
+        created(){
+            this.$store.dispatch('fetchInfo');
         },
         methods: {
             handleOpen(key, keyPath) {

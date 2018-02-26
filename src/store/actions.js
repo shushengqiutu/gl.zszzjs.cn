@@ -1,10 +1,11 @@
-import aPi from './api'
+import aPi from '../api'
 
-export const actions = {
-    fetchPlans( { commit } ) {
-       api.getPlans()
+export default{
+    fetchInfo( { commit } ) {
+        aPi.getInfo()
             .then( data => {
-                commit('getData')
+                console.log(data)
+             //   commit('getData')
             })
     },
 }
