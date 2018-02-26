@@ -111,10 +111,25 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
 
 export default {
   init(){
-    axios.defaults.baseURL = 'http://learn.zszzjs.cn';
+    const hostname = window.location.hostname
+    let apihostname = "learn.zszzjs.cn"
+    switch(hostname){
+      case "daijlgl.zszzjs.cn":
+        apihostname = "daijlweb.zszzjs.cn"
+        break
+      case "shaoleigl.zszzjs.cn":
+        apihostname = "shaoleiweb.zszzjs.cn"
+        break
+      case "testgl.zszzjs.cn":
+        apihostname = "test.zszzjs.cn"
+        break
+      default:
+        break
+    }
+    axios.defaults.baseURL = 'http://'+apihostname;
     axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
     axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-    axios.defaults.withCredentials = false;
+    axios.defaults.withCredentials = true;
   },
 
   get( options ) {

@@ -11,9 +11,12 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 
+http.init()
+
 http.get({
-  url: '/gl/admin/info'
+  url: '/gl/admin/info1'
 }).then( data=>console.log(data) )
+  .catch(e=>console.log(e.message))
 
 const ins = new Vue({
   el: '#app',

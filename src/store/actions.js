@@ -1,11 +1,11 @@
-import aPi from '../api'
+// import aPi from '../api'
 
 export default{
     fetchInfo( { commit } ) {
-        aPi.getInfo()
-            .then( data => {
-                console.log(data)
-             //   commit('getData')
-            })
+        // aPi.getInfo()
+        //     .then( data => {
+        //         console.log(data)
+        //      //   commit('getData')
+        //     })
     },
 }
