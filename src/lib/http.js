@@ -114,12 +114,10 @@ export default {
     const hostname = window.location.hostname
     let apihostname = "learn.zszzjs.cn"
     switch(hostname){
-      case "daijlgl.zszzjs.cn":
-        apihostname = "daijlweb.zszzjs.cn"
-        break
       case "shaoleigl.zszzjs.cn":
         apihostname = "shaoleiweb.zszzjs.cn"
         break
+      case "daijlgl.zszzjs.cn":
       case "testgl.zszzjs.cn":
         apihostname = "test.zszzjs.cn"
         break
