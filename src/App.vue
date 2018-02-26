@@ -6,7 +6,7 @@
       <el-col :span="2" class="logout">退出</el-col>
     </el-row>
     <el-row class="tac">
-        <el-col :span="3" class="fl left" style="height:100%;">
+        <el-col :span="5" class="fl left" style="height:100%;">
           <el-select style="width: 100%;" v-model="value" placeholder="请选择" @change="togglePro">
             <el-option
                     v-for="(item,index) in project"
@@ -30,7 +30,7 @@
                 <span>学情统计</span>
               </template>
               <el-menu-item index="/">项目学情情况</el-menu-item>
-              <el-menu-item index="/ProInfo">学校学情情况</el-menu-item>
+              <el-menu-item index="/SchoolInfo">学校学情情况</el-menu-item>
               <el-menu-item index="/StudentInfo">学员学情数据分析</el-menu-item>
               <el-menu-item index="/WsInfo">工作坊学情统计</el-menu-item>
             </el-submenu>
@@ -50,7 +50,7 @@
             </el-submenu>
           </el-menu>
         </el-col>
-        <el-col :span="21" class="fl right">
+        <el-col :span="19" class="fl right">
           <router-view/>
         </el-col>
       </el-row>
@@ -74,6 +74,9 @@
           project(){
               return this.$store.state.project
           }
+        },
+        mounted:{
+
         },
         methods: {
             handleOpen(key, keyPath) {

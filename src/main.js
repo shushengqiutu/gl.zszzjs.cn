@@ -8,10 +8,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);
-new Vue({
+const ins = new Vue({
   el: '#app',
   router,
   store,
   components: { App },
   template: '<App/>'
-})
+});
+
+console.log(ins.$store)
+console.log(ins.$store.commit)
+
+

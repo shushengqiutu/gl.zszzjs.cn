@@ -1,28 +1,67 @@
 <template>
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
+        平均看课数量（个），研修日志数，优秀成果数（被推优次数），互动交流数
         <el-row>
-            <el-radio v-model="radio" label="1">male</el-radio>
-            <el-radio v-model="radio" label="2">female</el-radio>
-            <el-table
-                    v-loading="loading"
-                    :data="tableData"
-                    style="width: 100%">
-                <el-table-column
-                        prop="date"
-                        label="日期"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="name"
-                        label="姓名"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="address"
-                        label="地址">
-                </el-table-column>
-            </el-table>
+         <h2 class="pro-desc h2">广生小学项目描述：<b>({{countTime}})</b></h2>
+            <table class="ck_table">
+                <tbody>
+                <tr style="height: 20px;">
+                    <td class="w320">学员总数</td>
+                    <td class="w80 bold"> 1443</td>
+                    <td class="w320">登录人数</td>
+                    <td class="w80">1443</td>
+                    <td class="w320">学习人数</td>
+                    <td class="w80">1443</td>
+                    <td class="w320">已合格人数</td>
+                    <td class="w80">1443</td>
+                    <td class="w320">未合格人数</td>
+                    <td class="w80 bold">0</td>
+                </tr>
+                <tr style="height: 20px">
+                    <td class="w320">参训率</td>
+                    <td class="w80"> 100.00%</td>
+                    <td class="w320">研修率</td>
+                    <td class="w80">100.00%</td>
+                    <td class="w320">合格率</td>
+                    <td class="w80">100.00%</td>
+                    <td class="w320">未合格率</td>
+                    <td class="w80">0.00%</td>
+                    <td class="w320"></td>
+                    <td class="w80"></td>
+                </tr>
+
+                <tr style="height:20px">
+                    <td class="w320">  平均看课数量（个）</td>
+                    <td class="w80">0</td>
+                    <td class="w320">研修日志数</td>
+                    <td class="w80">5</td>
+                    <td class="w320">优秀成果数（被推优次数）</td>
+                    <td class="w80">5</td>
+                    <td class="w320">互动交流数</td>
+                    <td class="w80">2</td>
+                    <td class="w320"></td>
+                    <td class="w80"></td>
+                </tr>
+                <tr style="height:20px">
+                    <td class="w320 ">参训学校数</td>
+                    <td class="w80 bold">0</td>
+                    <td class="w320">参训工作坊数</td>
+                    <td class="w80 bold">2</td>
+                    <td class="w320">坊主人数</td>
+                    <td class="w80 bold">5</td>
+                    <td class="w320"></td>
+                    <td class="w80"></td>
+                    <td class="w320"></td>
+                    <td class="w80"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="remind_y">
+                <span class="strong">成绩说明：</span><br>
+                1.采用百分制。<br>2.管理员本人的工作情况得分（满分100.0分）如下表所示:
+            </div>
         </el-row>
     </div>
 </template>
@@ -36,6 +75,7 @@
         data () {
             return {
                 location:'项目学情统计',
+                countTime:'2017-2-26 10:39:24',
                 loading: false,
                 radio:'1'
             }
