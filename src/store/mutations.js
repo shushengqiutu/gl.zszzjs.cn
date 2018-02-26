@@ -1,4 +1,5 @@
 export const state = {
+    admin:{},
     tableData:[{
         date: '2016-05-03',
         name: '王大虎',
@@ -99,6 +100,8 @@ export const mutations = {
             state.allData = arr
         }
     },
-
+    getAdminInfo(state,value){
+        state.admin = value ;
+    },
 };
 

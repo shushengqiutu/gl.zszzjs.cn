@@ -67,7 +67,8 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex'
+    import {mapGetters} from 'vuex';
+    import http from '../lib/http';
     import Breadcrumb from './Breadcrumb';
     export default {
         name: 'ProInfo',
@@ -82,6 +83,20 @@
         },
         computed:{
             ...mapGetters(['tableData']),
+        },
+        mounted(){
+            http.get({
+                url: '/gl/project/xueqing',
+                query:{
+                    project_id: this.$store.state.admin.current_project
+                }
+            }).then(
+                (data)=>{
+                    console.log(data)
+                }
+            ).catch(
+                e=> this.$message(e.message)
+            );
         }
     }
 </script>

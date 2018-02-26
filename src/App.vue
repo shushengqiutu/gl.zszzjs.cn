@@ -2,17 +2,17 @@
   <div id="app">
     <el-row class="header">
       <el-col :span="4" class="xt-name">教师研修管理系统</el-col>
-      <el-col :span="16" class="teacher-name">欢迎您:xxx管理员</el-col>
+      <el-col :span="16" class="teacher-name">欢迎您:{{adminstator}}管理员</el-col>
       <el-col :span="2" class="logout">退出</el-col>
     </el-row>
     <el-row class="tac">
         <el-col :span="5" class="fl left" style="height:100%;">
-          <el-select style="width: 100%;" v-model="value" placeholder="请选择" @change="togglePro">
+          <el-select style="width: 100%;" v-model="defaultProject" placeholder="请选择" @change="togglePro">
             <el-option
                     v-for="(item,index) in project"
                     :key="index"
-                    :label="item.label"
-                    :value="item.value">
+                    :label="item.name"
+                    :value="item.id">
             </el-option>
           </el-select>
           <el-menu
@@ -29,8 +29,8 @@
                 <i class="el-icon-menu"></i>
                 <span>学情统计</span>
               </template>
-              <el-menu-item index="/">项目学情情况</el-menu-item>
-              <el-menu-item index="/SchoolInfo">学校学情情况</el-menu-item>
+              <el-menu-item index="/ProInfo">学情概述</el-menu-item>
+              <el-menu-item index="/SchoolInfo">学校学情统计</el-menu-item>
               <el-menu-item index="/StudentInfo">学员学情数据分析</el-menu-item>
               <el-menu-item index="/WsInfo">工作坊学情统计</el-menu-item>
             </el-submenu>
@@ -39,14 +39,14 @@
                 <i class="el-icon-edit-outline"></i>
                 <span>公告管理</span>
               </template>
-              <el-menu-item index="/Notice">公告管理</el-menu-item>
+              <el-menu-item index="/Notice">项目公告管理</el-menu-item>
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-edit"></i>
                 <span>简报管理</span>
               </template>
-              <el-menu-item index="/Briefing">简报管理</el-menu-item>
+              <el-menu-item index="/Briefing">项目简报管理</el-menu-item>
             </el-submenu>
           </el-menu>
         </el-col>
@@ -62,21 +62,35 @@
 
 
 <script>
+    import http from './lib/http'
     export default {
         name:'app',
         data() {
             return {
                 isCollapse: true,
-                value:''
+                defaultProject:''
+
             };
         },
-        computed: {
-          project(){
-              return this.$store.state.project
-          }
+        mounted(){
+            http.get({
+                url: '/gl/admin/info'
+            }).then(
+                (data)=>{
+                    this.$store.commit('getAdminInfo',data);
+                    this.defaultProject =data.current_project.toString();
+                }
+            ).catch(
+                e=> this.$message(e.message)
+            );
         },
-        created(){
-            this.$store.dispatch('fetchInfo');
+        computed: {
+          adminstator(){
+              return this.$store.state.admin.nickname;
+          },
+          project(){
+              return this.$store.state.admin.projects;
+          }
         },
         methods: {
             handleOpen(key, keyPath) {

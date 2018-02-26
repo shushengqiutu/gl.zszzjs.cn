@@ -13,17 +13,17 @@ Vue.use(ElementUI);
 
 http.init()
 
-http.get({
-  url: '/gl/admin/info1'
-}).then( data=>console.log(data) )
-  .catch(e=>console.log(e.message))
 
-const ins = new Vue({
-  el: '#app',
-  router,
-  store,
-  components: { App },
-  template: '<App/>'
+new Vue({
+    el: '#app',
+    router,
+    store,
+    components: { App },
+    template: '<App/>'
 });
+
+
+
+
 
 

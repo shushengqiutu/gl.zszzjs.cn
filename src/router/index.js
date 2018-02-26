@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Index from '@/components/Index'
 import ProInfo from '@/components/ProInfo'
 import Notice from '@/components/Notice'
 import Briefing from '@/components/Briefing'
@@ -14,7 +15,7 @@ export default new Router({
     {
       path: '/',
       name: 'Index',
-      component: ProInfo
+      component: Index
     },
     {
         path: '/ProInfo',
