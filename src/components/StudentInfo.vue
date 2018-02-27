@@ -20,37 +20,41 @@
                     @row-click="test"
                     style="width: 100%">
                 <el-table-column
-                        prop="date"
+                        prop="nickname"
                         label="姓名"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="name"
+                        prop="phone"
                         label="手机号/用户名"
+                        :formatter="setFormatterUser"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="address"
+                        prop="employer"
                         label="所属学校（工作单位)">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
+                        prop="workshop_name"
                         label="所属工作坊">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
+                        prop="employer"
+                        :formater="formaterLogin"
                         label="是否参训">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
+                        prop="is_login"
+                        :formater="formaterLearn"
                         label="是否学习">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
+                        prop="is_pass"
+                        :formater="formaterPass"
                         label="是否合格">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
+                        prop="getAllScore"
                         label="总成绩">
                 </el-table-column>
             </el-table>
@@ -77,7 +81,9 @@
 </template>
 
 <script>
+
     import {mapGetters} from 'vuex';
+    import http from '../lib/http';
     import Breadcrumb from './Breadcrumb';
     export default {
         name: 'Briefing',
@@ -93,33 +99,57 @@
                 select:'',
                 currentPage:1,
                 visiable:false,
-                userInfo:''
+                userInfo:'',
+                tableData:[]
             }
         },
         computed:{
-            tableData(){
-                return this.$store.state.allData;
-            },
+
         },
         mounted(){
+            let id = this.$store.state.admin.current_project
+            http.get({
+                url: '/gl/project/student_xueqing',
+                query:{
+                    project_id: id
+                }
+            }).then(
+                (data)=>{
+                    this.tableData = data;
+                    console.log(data)
+                }
+            ).catch(
+                e=> this.$message(e.message)
+            );
             this.$store.commit('male','0')
             this.loading = false;
         },
         methods:{
-            aa(){
-                if(this.radio == '1'){
-                    this.$store.commit('male','1')
-                }else if(this.radio == '2'){
-                    this.$store.commit('male','2')
-                }else{
-                    this.$store.commit('male','0')
-                }
-            },
             selectData(){
                 console.log(this.input,this.select)
                 if(this.input&&this.select){
                     this.$store.commit('selectData',{type:this.select,value:this.input})
                 }
+            },
+            setFormatterUser(row,column){
+
+               if(row.phone== '' || row.phone== null){
+                   return row.user_name
+               }else{
+                   return row.phone
+               }
+            },
+            formaterLogin(row){
+             console.log(row.is_login)
+             console.log('是')
+
+              return  '是'
+            },
+            formaterLearn(row){
+                return  row.is_learn ?'是':'否'
+            },
+            formaterPass(row){
+                return  row.is_pass ?'是':'否'
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

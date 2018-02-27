@@ -1,5 +1,5 @@
 export const state = {
-    admin:{},
+    admin:JSON.parse(window.localStorage.getItem('getAdminInfo'))||{},
     tableData:[{
         date: '2016-05-03',
         name: '王大虎',
