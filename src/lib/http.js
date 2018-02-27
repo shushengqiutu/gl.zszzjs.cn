@@ -57,7 +57,7 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
     }
   }
   const options = {
-    url: url + '/' + restParameterString,
+    url: restParameterString.length === 0 ? url : url + '/' + restParameterString,
     method,
     params: query,
     paramsSerializer: toQueryString,
@@ -115,8 +115,6 @@ export default {
     let apihostname = "learn.zszzjs.cn"
     switch(hostname){
       case "shaoleigl.zszzjs.cn":
-        apihostname = "shaoleiweb.zszzjs.cn"
-        break
       case "daijlgl.zszzjs.cn":
       case "testgl.zszzjs.cn":
         apihostname = "test.zszzjs.cn"
