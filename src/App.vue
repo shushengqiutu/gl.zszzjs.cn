@@ -75,6 +75,7 @@
         mounted(){
             http.get({
                 url: '/gl/admin/info'
+                // url: '/test.php'
             }).then(
                 (data)=>{
                     this.$store.commit('getAdminInfo',data);

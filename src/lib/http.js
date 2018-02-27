@@ -115,6 +115,8 @@ export default {
     let apihostname = "learn.zszzjs.cn"
     switch(hostname){
       case "shaoleigl.zszzjs.cn":
+        apihostname = "shaoleiweb.zszzjs.cn"
+        break
       case "daijlgl.zszzjs.cn":
       case "testgl.zszzjs.cn":
         apihostname = "test.zszzjs.cn"
@@ -123,9 +125,10 @@ export default {
         break
     }
     axios.defaults.baseURL = 'http://'+apihostname;
-    axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-    axios.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
-    axios.defaults.withCredentials = true;
+    axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    axios.defaults.withCredentials = true
+
   },
 
   get( options ) {
