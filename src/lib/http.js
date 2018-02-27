@@ -84,6 +84,13 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
       if( typeof resp != "object" ) {
         await Promise.reject( new Error("响应结果格式不正确 "))
       }
+      //处理格式化后的返回参数ecode/emsg/data
+      if( resp.hasOwnProperty("ecode") && resp.hasOwnProperty("emsg") && resp.hasOwnProperty("data") ) {
+        if( resp.ecode != 0 ) {
+          await Promise.reject( new Error(resp.emsg) )
+        }
+        resp = resp.data
+      }
     }
     return resp
   } catch(e) {
