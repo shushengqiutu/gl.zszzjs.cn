@@ -5,7 +5,7 @@
       <el-col :span="16" class="teacher-name">欢迎您:{{adminstator}}管理员</el-col>
       <el-col :span="2" class="logout">退出</el-col>
     </el-row>
-    <el-row class="tac">
+    <el-row class="tac" v-loading="loading">
         <el-col :span="5" class="fl left" style="height:100%;">
           <el-select style="width: 100%;" v-model="defaultProject" placeholder="请选择" @change="togglePro">
             <el-option
@@ -68,7 +68,8 @@
         data() {
             return {
                 isCollapse: true,
-                defaultProject:''
+                defaultProject:'',
+                loading:true,
 
             };
         },
@@ -80,6 +81,44 @@
                 (data)=>{
                     this.$store.commit('getAdminInfo',data);
                     this.defaultProject =data.current_project.toString();
+                    let id = this.$store.state.admin.current_project;
+                    http.get({
+                        url: '/gl/project/student_xueqing',
+                        query:{
+                            project_id: id
+                        }
+                    }).then(
+                        (data)=>{
+                            let is_check = this.$store.getters.currentProCheckStatus;
+                            if(is_check){
+                                data.map(function(ele){
+                                    ele.is_login =   ele.is_login?'是':'否';
+                                    ele.employer = ele.employer?ele.employer:'未录入';
+                                    ele.is_learn =   ele.is_learn?'是':'否';
+                                    ele.is_pass =   ele.is_pass?'是':'否';
+                                });
+                            }else{
+                                data.map(function(ele){
+                                    ele.is_login =   ele.is_login?'是':'否';
+                                    ele.employer = ele.employer?ele.employer:'未录入';
+                                    ele.is_learn =   ele.is_learn?'是':'否';
+                                    ele.is_pass =  '--';
+                                    ele.getAllScore =  '--';
+                                    ele.getHomeworkScore =  '--';
+                                    ele.getXxhdScore =  '--';
+                                    ele.getYxrzScore =  '--';
+                                    ele.getZtyxScore =  '--';
+                                    ele.getNetclassScore =  '--';
+                                });
+                            }
+
+                            this.$store.commit('getStudentData',data);
+                            this.loading = false;
+
+                        }
+                    ).catch(
+                        e=> this.$message(e.message)
+                    );
                 }
             ).catch(
                 e=> this.$message(e.message)

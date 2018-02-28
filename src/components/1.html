@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+</body>
+</html>
+学校名称，学员总数，登录人数，学习人数，合格人数，参训率(100%)，学习率(100%)，合格率(100%)，
+平均看课数量（个），研修日志数，完成作业数，优秀成果数（被推优次数），参与活动人次，互动交流次数
+<script>
+    function reduce(arr){
+        let data ={
+            userCount:arr.length,
+            loginCount:0,
+            studyCount:0,
+            passCount:0,
+            studyCourseUserCount:0,
+            studyCourseCount:0,
+            yxrzCount:0,
+            doneHwCount:0,
+            goodHwCount:0,
+            doneHdCount:0,
+            discuzCount:0,
+        };
+        for(let i=0;i<arr.length;i++){
+            console.log(arr[i].is_login)
+            console.log(arr[i].is_login == 'true' || arr[i].is_login == '是')
+            if(arr[i].is_login == 'true' || arr[i].is_login == '是'){
+                data.loginCount += 1;
+            }
+            if(arr[i].is_learn == 'true' || arr[i].is_learn == '是'){
+                data.studyCount += 1;
+            }
+            if(arr[i].is_pass == 'true' || arr[i].is_pass == '是'){
+                data.passCount += 1;
+            }
+            if(arr[i].lesson_count>0){
+                data.studyCourseUserCount += 1;
+                data.studyCourseCount += arr[i].lesson_count;
+            }
+            data.yxrzCount += arr[i].yxrzCount;
+            data.doneHwCount += arr[i].doneHwCount;
+            data.goodHwCount += arr[i].goodHwCount;
+            data.doneHdCount += arr[i].doneHdCount;
+            data.discuzCount += arr[i].discuzCount;
+        }
+        data.joinRate = Math.round(data.loginCount / data.userCount).toFixed(2) ;
+        data.studyRate =  Math.round(data.studyCount / data.userCount).toFixed(2) ;
+        data.passRate = Math.round(data.passCount / data.userCount).toFixed(2)  ;
+        if(data.studyCourseUserCount){
+            data.lesson_count_average =  Math.round(data.studyCourseCount / data.studyCourseUserCount).toFixed(2)  ;
+        }else{
+            data.lesson_count_average = 0;
+        }
+        return data
+    }
+</script>
+checkStatus:false
+discuzCount:22
+doneHdCount:"0"
+doneHwCount:"3"
+employer:"沈大一小"
+getAllScore:"--"
+getHomeworkScore:"--"
+getNetclassScore:"--"
+getXxhdScore:"--"getYxrzScore:"--"
+getZtyxScore:"--"
+goodHwCount:"0"
+is_learn:"否"
+is_login:"否"
+is_pass:"--"
+last_login_time:"2018-01-21 10:50:20"
+lesson_count:"118"
+login_day_count:"10"
+nickname:"洪晓清"
+phase:"小学"
+phone:"13002494691"
+subject:"科学"
+user_id:"3167"
+user_name:"97fcs103"
+workshop_id:"249"
+workshop_name:"沈大一小工作坊"
+yxrzCount:"0"
+
+
+:
+discuzCount
+:
+(...)
+doneHdCount
+:
+(...)
+doneHwCount
+:
+(...)
+goodHwCount
+:
+(...)
+joinRate
+:
+(...)
+lesson_count_average
+:
+(...)
+loginCount
+:
+(...)
+passCount
+:
+(...)
+passRate
+:
+(...)
+schoolName
+:
+"中国"
+studyCount
+:
+1
+studyCourseCount
+:
+(...)
+studyCourseUserCount
+:
+(...)
+studyRate
+:
+(...)
+userCount
+:
+(...)
+yxrzCount
+:
+(...)

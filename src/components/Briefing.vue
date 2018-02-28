@@ -64,7 +64,6 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
     import Breadcrumb from './Breadcrumb';
     export default {
         name: 'Briefing',

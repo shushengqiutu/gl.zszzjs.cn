@@ -1,5 +1,6 @@
 export const state = {
-    admin:JSON.parse(window.localStorage.getItem('getAdminInfo'))||{},
+    admin:JSON.parse(window.localStorage.getItem('adminInfo'))||{},
+    studentData:JSON.parse(window.localStorage.getItem('studentData'))||{},
     tableData:[{
         date: '2016-05-03',
         name: '王大虎',
@@ -102,6 +103,9 @@ export const mutations = {
     },
     getAdminInfo(state,value){
         state.admin = value ;
+    },
+    getStudentData(state,value){
+        state.studentData = value ;
     },
 };
 

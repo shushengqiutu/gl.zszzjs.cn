@@ -181,6 +181,35 @@ table.ck_table tr .bold{
     width: 80px;
     font-size: 11px;
 }
+.table-student{
+    height: 520px;
+    overflow-y: scroll;
+}
+
+.sl_Table {
+    border-top: 1px solid #ccd7eb;
+    border-right: 1px solid #ccd7eb;
+    background-color: #fff;
+    width: 96%;
+    margin: 0 2%;
+}
+.sl_Table tr,.sl_Table td{
+    margin: 0;
+    padding: 0;
+}
+.sl_Table .bold{
+    font-weight:bold;
+    color:#333;
+}
+.sl_Table td {
+    border-left: 1px solid #ccd7eb;
+    border-bottom: 1px solid #ccd7eb;
+    text-align: left;
+    padding-left: 10px;
+    height: 30px;
+    color:#666;
+}
+
 
 
 

@@ -3,7 +3,7 @@
         <Breadcrumb :location="location"></Breadcrumb>
 
         <el-row>
-         <h2 class="pro-desc h2">{{projectInfo.project_name}}项目描述：<b>({{countTime}})</b></h2>
+         <h2 class="pro-desc h2">{{projectInfo.project_name}}项目描述：<b>({{currentProTime}})</b></h2>
             <table class="ck_table">
                 <tbody>
                 <tr style="height: 20px;">
@@ -77,17 +77,16 @@
         data () {
             return {
                 location:'项目学情统计',
-                countTime:'2017-2-26 10:39:24',
                 loading: false,
                 radio:'1',
                 projectInfo:{},
             }
         },
         computed:{
-            ...mapGetters(['tableData']),
+            ...mapGetters(['currentProTime']),
         },
         mounted(){
-            let id = this.$store.state.admin.current_project
+            let id = this.$store.state.admin.current_project;
             http.get({
                 url: '/gl/project/xueqing',
                 query:{

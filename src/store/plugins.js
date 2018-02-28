@@ -3,8 +3,13 @@ const localStoragePlugin = store => {
         console.log( 'mutation', mutation, 'state', state )
 
         if( mutation.type == 'getAdminInfo' ) {
-            window.localStorage.setItem("getAdminInfo", JSON.stringify(state.admin))
+            window.localStorage.setItem("adminInfo", JSON.stringify(state.admin))
         }
+
+        if( mutation.type == 'getStudentData' ) {
+            window.localStorage.setItem("studentData", JSON.stringify(state.studentData))
+        }
+
     })
 };
 
