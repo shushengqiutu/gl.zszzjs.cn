@@ -76,7 +76,6 @@
         mounted(){
             http.get({
                 url: '/gl/admin/info'
-                // url: '/test.php'
             }).then(
                 (data)=>{
                     this.$store.commit('getAdminInfo',data);
@@ -121,7 +120,9 @@
                     );
                 }
             ).catch(
-                e=> this.$message(e.message)
+                e => {
+                  this.$message("["+e.ecode+"]"+e.message)
+                }
             );
         },
         computed: {
