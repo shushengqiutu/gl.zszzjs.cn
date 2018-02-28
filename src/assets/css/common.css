@@ -209,7 +209,12 @@ table.ck_table tr .bold{
     height: 30px;
     color:#666;
 }
-
+.notice-mb{
+    margin: 20px;
+}
+.quill-editor{
+    margin-top: 20px;
+}
 
 
 

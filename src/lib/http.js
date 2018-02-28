@@ -152,6 +152,7 @@ export default {
   },
 
   post({config, url,params,query,data,responseType}) {
+    console.log({config, url,params,query,data,responseType})
     return _ajax( {config, url, method:'post', params, payload:'form',query, data, responseType} )
   },
 

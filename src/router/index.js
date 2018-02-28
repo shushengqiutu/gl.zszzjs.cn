@@ -7,6 +7,7 @@ import Briefing from '@/components/Briefing'
 import SchoolInfo from '@/components/SchoolInfo'
 import StudentInfo from '@/components/StudentInfo'
 import WsInfo from '@/components/WsInfo'
+import WriteNotice from '@/components/WriteNotice'
 
 Vue.use(Router)
 
@@ -46,6 +47,11 @@ export default new Router({
         path: '/WsInfo',
         name: 'WsInfo',
         component: WsInfo
+    },
+   {
+      path: '/WriteNotice',
+      name: 'WriteNotice',
+      component: WriteNotice
     }
   ]
 })

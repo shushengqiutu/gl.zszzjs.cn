@@ -3,7 +3,7 @@
         <Breadcrumb :location="location"></Breadcrumb>
         <el-row style="margin:5px 0">
             <el-col :span="8">
-                <el-select v-model="value" placeholder="请选择学校名称搜索">
+                <el-select v-model="value" placeholder="请选择学校名称搜索" clearbale>
                     <el-option
                             v-for="item in filterSchools"
                             :key="item.value"
