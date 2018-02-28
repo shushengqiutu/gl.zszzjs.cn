@@ -3,6 +3,7 @@
  */
 import axios from 'axios'
 import qs from 'qs'
+import ApiError from './error'
 
 function toQueryString( params ){
   return qs.stringify(params)
@@ -15,7 +16,7 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
 
   if( params ) {
     if( !(typeof params == "object") ) {
-      await Promise.reject( new Error("rest 参数不正确"))
+      await Promise.reject( new Error("rest 参数不正确") )
     }
     //params sort
     let keys = Object.keys( params ).sort()
@@ -48,12 +49,12 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
       body = toQueryString(data)
     }else if( payload == "multiform"){
       if( !data instanceof FormData ){
-        await Promise.reject( new Error("payload类型与data不匹配"))
+        await Promise.reject( new Error("payload类型与data不匹配") )
       }else{
         body = data
       }
     }else{
-      await Promise.reject( new Error("payload类型不正确"))
+      await Promise.reject( new Error("payload类型不正确") )
     }
   }
   const options = {
@@ -87,29 +88,32 @@ async function _ajax( { config={}, url, method, params, query, data=null, payloa
       //处理格式化后的返回参数ecode/emsg/data
       if( resp.hasOwnProperty("ecode") && resp.hasOwnProperty("emsg") && resp.hasOwnProperty("data") ) {
         if( resp.ecode != 0 ) {
-          await Promise.reject( new Error(resp.emsg) )
+          let e = new ApiError( resp.ecode, resp.emsg)
+          await Promise.reject( e )
         }
         resp = resp.data
       }
     }
     return resp
   } catch(e) {
-    if (e.response) {
+    if( e.hasOwnProperty("ecode") ) { //instanceof 在chrome上可行，但是在babel环境中不行
+      await Promise.reject(e)
+    } else if (e.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log('server', e.response)
-      await Promise.reject(new Error('响应内容错误：'+e.message))
+      await Promise.reject(new ApiError( -1, '响应内容错误：'+e.message))
     } else if (e.request) {
       // The request was made but no response was received
       // `Error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
       //一种可能是未能连接上服务器
       console.log('req', e);
-      await Promise.reject( new Error('请求时发生错误:'+e.message))
+      await Promise.reject( new ApiError( -1, '请求时发生错误:'+e.message))
     } else {
       // Something happened in setting up the request that triggered an e
       console.log('other', e.message)
-      await Promise.reject( new Error('其他错误:'+e.message))
+      await Promise.reject( new ApiError( -1, '其他错误:'+e.message))
     }
   }
 
