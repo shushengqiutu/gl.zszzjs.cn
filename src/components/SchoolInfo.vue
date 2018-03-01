@@ -67,7 +67,7 @@
                 </el-table-column>
                 <el-table-column
                         prop="goodHwCount"
-                        label="优秀成果数（被推优次数）">
+                        label="优秀成果数">
                 </el-table-column>
                 <el-table-column
                         prop="doneHdCount"

@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" node-key="id"  highlight-current></el-tree>
+        <el-tree ref="tree" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" node-key="id"  highlight-current></el-tree>
 
         <div class="buttons">
             <el-button @click="getCheckedNodes">通过 node 获取</el-button>
@@ -12,46 +12,65 @@
         </div>
         <el-row>
             <el-table
-                    class="table-student"
                     v-loading="loading"
-                    :data="studentData"
+                    :data="filterStudentData"
                     stripe
                     style="width: 100%">
                 <el-table-column
-                        prop="nickname"
-                        label="姓名"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="phone"
-                        label="手机号/用户名"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="employer"
-                        label="所属学校（工作单位)">
-                </el-table-column>
-                <el-table-column
                         prop="workshop_name"
-                        label="所属工作坊">
+                        label="工作坊名称"
+                        width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="is_login"
-                        label="是否参训">
+                        prop="num"
+                        label="学员总数">
                 </el-table-column>
                 <el-table-column
-                        prop="is_learn"
-                        label="是否学习">
+                        prop="login"
+                        label="登录人数">
                 </el-table-column>
                 <el-table-column
-                        prop="is_pass"
-                        label="是否合格">
+                        prop="learn"
+                        label="学习人数">
                 </el-table-column>
                 <el-table-column
-                        prop="getAllScore"
-                        label="总成绩">
+                        prop="pass"
+                        label="合格人数">
+                </el-table-column>
+                <el-table-column
+                        prop="loginPercent"
+                        label="参训率(100%)">
+                </el-table-column>
+                <el-table-column
+                        prop="learnPercent"
+                        label="学习率(100%)">
+                </el-table-column>
+                <el-table-column
+                        prop="passPercent"
+                        label=" 合格率(100%)">
+                </el-table-column>
+                <el-table-column
+                        prop="lessonCount"
+                        label="平均看课数量">
+                </el-table-column>
+                <el-table-column
+                        prop="yxrzCount"
+                        label="研修日志数">
+                </el-table-column>
+                <el-table-column
+                        prop="goodHwCount"
+                        label="优秀成果数">
+                </el-table-column>
+               <!-- <el-table-column
+                        prop="doneHdCount"
+                        label="参与活动人次">
+                </el-table-column>-->
+                <el-table-column
+                        prop="discuzCount"
+                        label="互动交流次数">
                 </el-table-column>
             </el-table>
+            {{studentData}}
         </el-row>
         <el-row>
             <div class="block">
@@ -70,6 +89,24 @@
 </template>
 
 <script>
+    function ds(arr,id){
+
+
+        let b = [];
+        for(let i=0;i<arr.length;i++){
+            a(arr[i]);
+        }
+        function a(arr){
+            if(arr.children){
+                for(let n=0;n<arr.children.length;n++){
+                    a(arr.children[n])
+                }
+            }else{
+                b.push(arr[id]);
+            }
+        }
+        return b
+    }
     import Breadcrumb from './Breadcrumb';
     import http from '../lib/http';
     export default {
@@ -80,60 +117,97 @@
                 location:'工作坊学情统计',
                 loading:false,
                 studentData:[],
+                filterStudentData:[],
                 currentPage:1,
                 pageSize:20,
                 totalData:0,
-                data: [{
-                    id: 1,
-                    label: '一级 1',
-                    children: [{
-                        id: 4,
-                        label: '二级 1-1',
-                        children: [{
-                            id: 9,
-                            label: '三级 1-1-1'
-                        }, {
-                            id: 10,
-                            label: '三级 1-1-2'
-                        }]
-                    }]
-                }, {
-                    id: 2,
-                    label: '一级 2',
-                    children: [{
-                        id: 5,
-                        label: '二级 2-1'
-                    }, {
-                        id: 6,
-                        label: '二级 2-2'
-                    }]
-                }, {
-                    id: 3,
-                    label: '一级 3',
-                    children: [{
-                        id: 7,
-                        label: '二级 3-1'
-                    }, {
-                        id: 8,
-                        label: '二级 3-2'
-                    }]
-                }],
+                treeData: [],
                 defaultProps: {
                     children: 'children',
-                    label: 'label'
+                    label: 'name'
                 }
             }
         },
         mounted(){
             let id = this.$store.state.admin.current_project;
             http.get({
-                url: '/gl/project/workshop_xueqing',
+                url:'/gl/project/workshop_xueqing',
+                query:{
+                    project_id: id
+                }
+            }).then(
+                (res)=>{
+                    console.log(res)
+                    this.studentData = res;
+                    this.filterStudentData = res;
+                }
+            ).catch(
+                e=> {
+                    this.$message({type:'error',message:e.message})
+                }
+            );
+            http.get({
+                url: '/gl/admin/ws_and_wg_list',
                 query:{
                     project_id: id
                 }
             }).then((data)=>{
-                console.log(data)
-            })
+               // console.log(data.workshops);
+               // console.log(data.workgroups);
+                let workshops= data.workshops ;
+                let workgroups= data.workgroups ;
+                let arr = [];
+                let topLevel=[];
+
+                for(let i=0;i<workshops.length;i++){
+                    workshops[i].id = workshops[i].workshop_id;
+                    workshops[i].isLeaf = false;
+                }
+                for(let j=0;j<workgroups.length;j++){
+                    workgroups[j].id = workgroups[j].workgroup_id;
+                    workgroups[j].isLeaf = true;
+                }
+
+                for(let i=0;i<workshops.length;i++){
+                    for(let j=0;j<workgroups.length;j++){
+                        if(workshops[i].path == workgroups[j].path ){
+                            if( workgroups[j].children){
+                                workgroups[j].children.push(workshops[i])
+                            }else{
+                                workgroups[j].children = [];
+                                workgroups[j].children.push(workshops[i])
+                            }
+                        }
+                    }
+                }
+
+             //  console.log( workgroups);
+
+                topLevel = workgroups.filter((ele)=>{
+                    return ele.father_wg_id == null;
+                });
+
+                topLevel.map(function(ele){
+                    arr.push(ele)
+                });
+                //console.log( 'a');
+              //  console.log(arr);
+                for(let i=0;i<workgroups.length;i++){
+                    if(workgroups[i].father_wg_id != null) {
+                        for(let j=0;j< arr.length;j++){
+                            if (workgroups[i] .father_wg_id  == arr[j].workgroup_id ) {
+                                arr[j].children.push(workgroups[i])
+                            }
+                        }
+                    }
+                }
+               this.treeData = arr;
+
+            }).catch(
+                e=> {
+                    this.$message({type:'error',message:e.message})
+                }
+            );
         },
         methods:{
             handleSizeChange(val) {
@@ -143,7 +217,51 @@
                 console.log(val);
             },
             handleNodeClick(data){
+
+                console.log('xxxxxxxxxxxxxxxxxxxxxxxxx')
                 console.log(data)
+
+              if(data.isLeaf){
+                let q= ds(data.children,'id');
+
+                let s = this.studentData;
+                let combine =[]
+
+              for(let n=0;n<q.length;n++){
+                   for(let m=0;m<s.length;m++){
+                       if(s[m].workshop_id == q[n]){
+                           console.log(s[m])
+                           combine.push(s[m])
+                       }
+                   }
+               }
+
+               //todo
+
+                  console.log(combine)
+                  q.map((ele)=>{
+                       s.map((n)=>{
+
+                           console.log(n.workshop_id == ele)
+                            if(n.workshop_id == ele){
+                                combine.push(n)
+                            }
+                        })
+                    });
+
+                  /*  this.filterStudentData = data;*/
+                   /* this.filterStudentData=this.studentData.filter((ele)=>{
+                        return ele.workshop_id == data.id
+                    });*/
+
+                }else{
+                    console.log(data.id);
+                    console.log(this.studentData)
+                    this.filterStudentData=this.studentData.filter((ele)=>{
+                        return (ele.workshop_id == 281)
+                    });
+
+                }
             },
             getCheckedNodes() {
                 console.log(this.$refs.tree.getCheckedNodes());

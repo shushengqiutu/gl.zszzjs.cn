@@ -75,32 +75,34 @@
         },
         methods: {
             handleLook(row){
-                console.log(row)
+                console.log(row.id)
+                this.$router.push({
+                    path:'/NoticeDetail',
+                    query:{id:row.id},
+                })
             },
             handleDelete(row){
-                http.get({
-                    url: '/gl/notice/delNotice',
-                    query:{
-                        id: row.id,
-                    }
-                }).then(
-                    (data)=>{
-                        console.log(data)
-                        console.log('111')
-                        if(data.ecode== '0' ){
-                            this.$message({type:'success',message:'删除成功'});
-                        }else{
-                            this.$message({type:'error',message:data.emsg})
+                let adminId = this.$store.state.admin.id;
+                console.log(row.admin_id ==  adminId)
+                if(row.admin_id == adminId){
+                    http.get({
+                        url: '/gl/notice/delNotice',
+                        query:{
+                            id: row.id,
                         }
-                    }
-                ).catch(
-                    e=> {
+                    }).then(
+                        (data)=>{
+                            this.$message({type:'success',message:'删除成功'})
+                        }
+                    ).catch(
+                        e=> {
+                            this.$message({type:'error',message:e.message})
+                        }
+                    );
+                }else{
+                    this.$message({type:'error',message:'无权限，你只能删除自己发布的公告'})
+                }
 
-                        console.log('xxxxxxx')
-                        console.log(e)
-                        this.$message(e.message)
-                    }
-                );
             },
             handleSizeChange(val) {
                 let id = this.$store.state.admin.current_project;
@@ -121,12 +123,13 @@
                     }
                 }).then(
                     (data)=>{
-                        console.log(data)
                         this.tableData =  data.notice_list
                         this.total =  data.notice_count
                     }
                 ).catch(
-                    e=> this.$message(e.message)
+                    e=>{
+                        this.$message({type:'error',message:e.message})
+                    }
                 );
             },
             toPublishNotice(){

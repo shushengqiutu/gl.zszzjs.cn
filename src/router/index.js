@@ -8,6 +8,10 @@ import SchoolInfo from '@/components/SchoolInfo'
 import StudentInfo from '@/components/StudentInfo'
 import WsInfo from '@/components/WsInfo'
 import WriteNotice from '@/components/WriteNotice'
+import NoticeDetail from '@/components/NoticeDetail'
+import WriteBrief from '@/components/WriteBrief'
+import BriefDetail from '@/components/BriefDetail'
+
 
 Vue.use(Router)
 
@@ -29,11 +33,6 @@ export default new Router({
         component: Notice
     },
     {
-        path: '/Briefing',
-        name: 'Briefing',
-        component: Briefing
-    },
-    {
         path: '/SchoolInfo',
         name: 'SchoolInfo',
         component: SchoolInfo
@@ -52,6 +51,26 @@ export default new Router({
       path: '/WriteNotice',
       name: 'WriteNotice',
       component: WriteNotice
-    }
+    },
+    {
+        path: '/NoticeDetail',
+        name: 'NoticeDetail',
+        component: NoticeDetail
+    },
+    {
+        path: '/Briefing',
+            name: 'Briefing',
+        component: Briefing
+    },
+  {
+      path: '/WriteBrief',
+      name: 'WriteBrief',
+      component: WriteBrief
+  },
+  {
+      path: '/BriefDetail',
+      name: 'BriefDetail',
+      component: BriefDetail
+  },
   ]
 })

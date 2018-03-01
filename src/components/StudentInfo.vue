@@ -208,16 +208,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td  class="bold">
+                       <!-- <td  class="bold">
                             <span class="FB">活动:</span>
                         </td>
                         <td>
                             {{userInfo.doneHdCount}}
-                        </td>
+                        </td>-->
                         <td class="bold">
                             互动交流
                         </td>
-                        <td colspan="3">
+                        <td colspan="5">
                             {{userInfo.discuzCount}}
                         </td>
                     </tr>

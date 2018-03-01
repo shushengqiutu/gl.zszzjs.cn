@@ -1,130 +1,141 @@
 <template>
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
-        <el-row style="margin:30px 0">
-            <el-col :span="8">
-                <el-input placeholder="请输入内容" v-model="input" class="input-with-select select-order" >
-                    <el-select v-model="select" slot="prepend" placeholder="请选择搜索条件" :clearable="true" @change="">
-                        <el-option label="姓名" value="1"></el-option>
-                        <el-option label="性别" value="2"></el-option>
-                    </el-select>
-                    <el-button slot="append" icon="el-icon-search" @click="selectData"></el-button>
-                </el-input>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-radio v-model="radio" label="0" @change="aa">全部</el-radio>
-            <el-radio v-model="radio" label="1" @change="aa">male</el-radio>
-            <el-radio v-model="radio" label="2" @change="aa">female</el-radio>
+        <div>
+            <el-row class="clearfix notice-mb">
+                <el-button  class="fr" type="primary" @click="toPublishNotice"><i class="el-icon-edit"></i>发布</el-button>
+
+            </el-row>   <hr>
+
             <el-table
-                    v-loading="loading"
                     :data="tableData"
+                    class="table-student"
                     stripe
-                    @row-click="test"
                     style="width: 100%">
                 <el-table-column
-                        prop="date"
-                        label="日期"
-                        width="180">
+                        prop="title"
+                        label="标题"
+                >
                 </el-table-column>
                 <el-table-column
-                        prop="name"
-                        label="姓名"
-                        width="180">
+                        prop="admin_name"
+                        label="发布者"
+                >
                 </el-table-column>
                 <el-table-column
-                        prop="address"
-                        label="地址">
+                        prop="ctime"
+                        label="发布时间">
                 </el-table-column>
                 <el-table-column
-                        prop="sex"
-                        label="性别">
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="handleLook(scope.row)" type="text" size="small">查看</el-button>
+                        <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
-        </el-row>
-        <el-row>
-            <div class="block">
-                <el-pagination
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="currentPage"
-                        :page-sizes="[1, 2, 3, 4]"
-                        :page-size="2"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="tableData.length">
-                </el-pagination>
-            </div>
-        </el-row>
-        <el-dialog title="教师详细信息" :visible.sync="visiable">
-            <div>
-                {{userInfo}}
-            </div>
-        </el-dialog>
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-size="pageSize"
+                    layout="total, prev, pager, next"
+                    :total="total">
+            </el-pagination>
+        </div>
     </div>
 </template>
 
 <script>
     import Breadcrumb from './Breadcrumb';
+
+    import http from '../lib/http';
+
     export default {
         name: 'Briefing',
-        components:{
-            Breadcrumb,
-        },
+        components:{Breadcrumb},
         data () {
             return {
-                location:'项目学情统计',
-                loading: true,
-                radio:'0',
-                input:'',
-                select:'',
+                location:'简报管理',
+                tableData:[],
                 currentPage:1,
-                visiable:false,
-                userInfo:''
+                pageSize:20,
+                total:0,
             }
         },
-        computed:{
-          tableData(){
-              return this.$store.state.allData;
-          },
+        mounted() {
+            let id = this.$store.state.admin.current_project;
+
+            this.getNoticeList(id,this.currentPage,this.pageSize)
         },
-        mounted(){
-         this.$store.commit('male','0')
-         this.loading = false;
+        computed: {
+
         },
-        methods:{
-            aa(){
-                if(this.radio == '1'){
-                   this.$store.commit('male','1')
-                }else if(this.radio == '2'){
-                    this.$store.commit('male','2')
-                }else{
-                    this.$store.commit('male','0')
-                }
+        methods: {
+            handleLook(row){
+                console.log(row.id)
+                this.$router.push({
+                    path:'/NoticeDetail',
+                    query:{id:row.id},
+                })
             },
-            selectData(){
-                console.log(this.input,this.select)
-                if(this.input&&this.select){
-                    this.$store.commit('selectData',{type:this.select,value:this.input})
+            handleDelete(row){
+                let adminId = this.$store.state.admin.id;
+                console.log(row.admin_id ==  adminId)
+                if(row.admin_id == adminId){
+                    http.get({
+                        url: '/gl/notice/delNotice',
+                        query:{
+                            id: row.id,
+                        }
+                    }).then(
+                        (data)=>{
+                            this.$message({type:'success',message:'删除成功'})
+                        }
+                    ).catch(
+                        e=> {
+                            this.$message({type:'error',message:e.message})
+                        }
+                    );
+                }else{
+                    this.$message({type:'error',message:'无权限，你只能删除自己发布的简报'})
                 }
+
             },
             handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
+                let id = this.$store.state.admin.current_project;
+                this.getNoticeList(id,this.currentPage,val)
             },
             handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
+                let id = this.$store.state.admin.current_project;
+                this.getNoticeList(id,val,this.pageSize)
             },
-            test(row){
-                console.log(row)
-                this.visiable = true;
-                this.userInfo = row ;
+            getNoticeList(id,page,size){
+                http.get({
+                    url: '/gl/notice/noticelist',
+                    query:{
+                        project_id: id,
+                        p:page,
+                        size:size,
+                        type:3
+                    }
+                }).then(
+                    (data)=>{
+                        this.tableData =  data.notice_list
+                        this.total =  data.notice_count
+                    }
+                ).catch(
+                    e=>{
+                        this.$message({type:'error',message:e.message})
+                    }
+                );
+            },
+            toPublishNotice(){
+                this.$router.push({path:'/WriteBrief',name:'WriteBrief'})
             }
-        }
+        },
+
     }
 </script>
-
-<style>
-    .input-with-select .el-input-group__prepend {
-        background-color: #fff;
-    }
-</style>
-

@@ -67,12 +67,12 @@
 
     import { quillEditor } from 'vue-quill-editor'
     export default {
-        name: 'WriteNotice',
+        name: 'WriteBrief',
         components:{Breadcrumb,quillEditor},
         data () {
             return {
                 activeName: 'first',
-                location:'公告',
+                location:'简报',
                 title  :'',
                 content:'',
                 editorOption:{
@@ -125,12 +125,12 @@
         },
         methods: {
             handleClick(tab, event) {
-
+                console.log(tab, event);
             },
-             getCookie(name){
+            getCookie(name){
                 let arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
                 return (arr=document.cookie.match(reg))?unescape(arr[2]):null;
-             },
+            },
             onEditorChange({ quill, html, text }) {
                 this.content = html
             },
@@ -142,7 +142,7 @@
                 data.title = this.title;
                 data.content = this.content;
                 data.project_id = id;
-                data.type = 1;
+                data.type = 3;
                 if(this.title && this.content){
                     http.post({
                         url: '/gl/notice/newNotice',
@@ -156,7 +156,7 @@
                         e=> this.$message(e.message)
                     );
                 }else{
-                    this.$message({type:'error',message:'公告内容和标题必须填写'});
+                    this.$message({type:'error',message:'简报内容和标题必须填写'});
                 }
             },
             cancel(){

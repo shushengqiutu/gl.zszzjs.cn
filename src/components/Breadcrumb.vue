@@ -1,7 +1,7 @@
 <template>
     <div class="clearfix breadcrumb" >
         <span class="fl">当前位置&nbsp;:&nbsp;</span>
-        <span class="fl">
+        <span class="fl" style="display: block;">
                 <el-breadcrumb separator-class="el-icon-arrow-right">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>{{location}}</el-breadcrumb-item>

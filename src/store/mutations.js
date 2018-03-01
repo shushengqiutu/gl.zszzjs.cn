@@ -1,55 +1,8 @@
 export const state = {
     admin:JSON.parse(window.localStorage.getItem('adminInfo'))||{},
     studentData:JSON.parse(window.localStorage.getItem('studentData'))||{},
-    tableData:[{
-        date: '2016-05-03',
-        name: '王大虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        sex:'male'
-    }, {
-        date: '2016-05-02',
-        name: '王二虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        sex:'male'
-    }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        sex:'female'
-    },
-    {
-        date: '2016-05-04',
-        name: '王4虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        sex:'female'
-    },
-    {
-        date: '2016-05-04',
-        name: '王5虎',
-        address: '上海市普陀区金沙江路 1518 弄',
-        sex:'female'
-    }],
-    allData:[],
-    maleData:[],
-    femaleData:[],
-    project:[
-        {
-            value: '选项1',
-            label: '项目1'
-        }, {
-            value: '选项2',
-            label: '项目2'
-        }, {
-            value: '选项3',
-            label: '项目3'
-        }, {
-            value: '选项4',
-            label: '项目4'
-        }, {
-            value: '选项5',
-            label: '项目5'
-        }
-    ]
+    previewNoticeData:{}
+
 };
 export const mutations = {
     male(state,value){
@@ -107,5 +60,8 @@ export const mutations = {
     getStudentData(state,value){
         state.studentData = value ;
     },
+    savePreviewNoticeData(state,value){
+        state.previewNoticeData = value ;
+    }
 };
 
