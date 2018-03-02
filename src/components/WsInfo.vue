@@ -2,23 +2,18 @@
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
         <el-tree ref="tree" :data="treeData" :props="defaultProps" @node-click="handleNodeClick" node-key="id"  highlight-current></el-tree>
-
-        <div class="buttons">
-            <el-button @click="getCheckedNodes">通过 node 获取</el-button>
-            <el-button @click="getCheckedKeys">通过 key 获取</el-button>
-            <el-button @click="setCheckedNodes">通过 node 设置</el-button>
-            <el-button @click="setCheckedKeys">通过 key 设置</el-button>
-            <el-button @click="resetChecked">清空</el-button>
-        </div>
         <el-row>
             <el-table
                     v-loading="loading"
-                    :data="filterStudentData"
+                    :data="onePageData"
+                    :row-class-name="tableRowClassName"
+                    @cell-click="lookWsInfo"
                     stripe
                     style="width: 100%">
                 <el-table-column
                         prop="workshop_name"
                         label="工作坊名称"
+
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -50,8 +45,10 @@
                         label=" 合格率(100%)">
                 </el-table-column>
                 <el-table-column
-                        prop="lessonCount"
-                        label="平均看课数量">
+                        prop="lessonNum"
+                        label="平均看课数量"
+                        :formatter="formatterLesson"
+                >
                 </el-table-column>
                 <el-table-column
                         prop="yxrzCount"
@@ -70,7 +67,7 @@
                         label="互动交流次数">
                 </el-table-column>
             </el-table>
-            {{studentData}}
+            {{filterStudentData}}
         </el-row>
         <el-row>
             <div class="block">
@@ -78,10 +75,10 @@
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page="currentPage"
-                        :page-sizes="[20, 40, 60, 100]"
+                        :page-sizes="[1, 2, 3, 40]"
                         :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="totalData">
+                        :total="total">
                 </el-pagination>
             </div>
         </el-row>
@@ -89,24 +86,13 @@
 </template>
 
 <script>
-    function ds(arr,id){
-
-
-        let b = [];
-        for(let i=0;i<arr.length;i++){
-            a(arr[i]);
-        }
-        function a(arr){
-            if(arr.children){
-                for(let n=0;n<arr.children.length;n++){
-                    a(arr.children[n])
-                }
-            }else{
-                b.push(arr[id]);
-            }
-        }
-        return b
+    function tablePagination(data,currentPage,pageSize,){
+        let startNum = ( currentPage-1 ) * pageSize;
+        let endNum = startNum + pageSize;
+        let array = data.slice(startNum, endNum);
+        return array;
     }
+
     import Breadcrumb from './Breadcrumb';
     import http from '../lib/http';
     export default {
@@ -118,15 +104,18 @@
                 loading:false,
                 studentData:[],
                 filterStudentData:[],
+                onePageData:[],
                 currentPage:1,
-                pageSize:20,
-                totalData:0,
+                pageSize:1,
+                total:1,
                 treeData: [],
                 defaultProps: {
                     children: 'children',
                     label: 'name'
                 }
             }
+        },
+        computed:{
         },
         mounted(){
             let id = this.$store.state.admin.current_project;
@@ -137,9 +126,10 @@
                 }
             }).then(
                 (res)=>{
-                    console.log(res)
                     this.studentData = res;
+                    this.total = res.length;
                     this.filterStudentData = res;
+                    this.onePageData =tablePagination(this.studentData,this.currentPage,this.pageSize)
                 }
             ).catch(
                 e=> {
@@ -152,13 +142,13 @@
                     project_id: id
                 }
             }).then((data)=>{
-               // console.log(data.workshops);
-               // console.log(data.workgroups);
                 let workshops= data.workshops ;
                 let workgroups= data.workgroups ;
-                let arr = [];
-                let topLevel=[];
+                let arr = [];   // 用来承载树结构
+                let topLevel=[]; //找到树的头部
 
+
+                //给树节点区分是否为羯子节点
                 for(let i=0;i<workshops.length;i++){
                     workshops[i].id = workshops[i].workshop_id;
                     workshops[i].isLeaf = false;
@@ -168,6 +158,8 @@
                     workgroups[j].isLeaf = true;
                 }
 
+
+                //
                 for(let i=0;i<workshops.length;i++){
                     for(let j=0;j<workgroups.length;j++){
                         if(workshops[i].path == workgroups[j].path ){
@@ -180,9 +172,6 @@
                         }
                     }
                 }
-
-             //  console.log( workgroups);
-
                 topLevel = workgroups.filter((ele)=>{
                     return ele.father_wg_id == null;
                 });
@@ -190,8 +179,6 @@
                 topLevel.map(function(ele){
                     arr.push(ele)
                 });
-                //console.log( 'a');
-              //  console.log(arr);
                 for(let i=0;i<workgroups.length;i++){
                     if(workgroups[i].father_wg_id != null) {
                         for(let j=0;j< arr.length;j++){
@@ -211,79 +198,99 @@
         },
         methods:{
             handleSizeChange(val) {
-                console.log(val);
+                this.pageSize = val;
+                this.onePageData =tablePagination(this.filterStudentData,this.currentPage,val);
             },
             handleCurrentChange(val) {
-                console.log(val);
+                this.currentPage = val;
+                this.onePageData =tablePagination(this.filterStudentData,val,this.pageSize);
             },
-            handleNodeClick(data){
-
-                console.log('xxxxxxxxxxxxxxxxxxxxxxxxx')
-                console.log(data)
-
-              if(data.isLeaf){
-                let q= ds(data.children,'id');
-
-                let s = this.studentData;
-                let combine =[]
-
-              for(let n=0;n<q.length;n++){
-                   for(let m=0;m<s.length;m++){
-                       if(s[m].workshop_id == q[n]){
-                           console.log(s[m])
-                           combine.push(s[m])
-                       }
-                   }
-               }
-
-               //todo
-
-                  console.log(combine)
-                  q.map((ele)=>{
-                       s.map((n)=>{
-
-                           console.log(n.workshop_id == ele)
-                            if(n.workshop_id == ele){
-                                combine.push(n)
-                            }
-                        })
-                    });
-
-                  /*  this.filterStudentData = data;*/
-                   /* this.filterStudentData=this.studentData.filter((ele)=>{
-                        return ele.workshop_id == data.id
-                    });*/
-
+            formatterLesson(row){
+                if(row.lessonNum){
+                    return (row.lessonCount/row.lessonNum)
                 }else{
-                    console.log(data.id);
-                    console.log(this.studentData)
-                    this.filterStudentData=this.studentData.filter((ele)=>{
-                        return (ele.workshop_id == 281)
-                    });
-
+                    return '0'
                 }
             },
-            getCheckedNodes() {
-                console.log(this.$refs.tree.getCheckedNodes());
+            tableRowClassName({row}){
+                if(row.isTotal == true){
+                    return 'tableTotal'
+                }
             },
-            getCheckedKeys() {
-                console.log(this.$refs.tree.getCheckedKeys());
+            lookWsInfo(row, column, cell, event){
+                console.log(row, column, cell, event)
+               if(row.isTotal){
+                    return;
+                }else{
+                    this.$router.push({
+                        path:'/StudentInfo',
+                        query:{
+                            wsid:row.workshop_id
+                        }
+                    })
+                }
             },
-            setCheckedNodes() {
-                this.$refs.tree.setCheckedNodes([{
-                    id: 5,
-                    label: '二级 2-1'
-                }, {
-                    id: 9,
-                    label: '三级 1-1-1'
-                }]);
+            handleNodeClick(data){
+              if(data.isLeaf){
+                  //sData 挑选出符合条件的数据
+                  let sData = this.studentData.filter((ele)=>{
+                      return  ele.workshop_path.startsWith(data.path)
+                  });
+                  let leafData = {
+                      workshop_name:data.name,
+                      num:0,
+                      login:0,
+                      learn:0,
+                      pass:0,
+                      loginPercent:'',
+                      learnPercent:'',
+                      passPercent:'',
+                      lessonCount:0,
+                      lessonNum:0,
+                      yxrzCount:0,
+                      goodHwCount:0,
+                      doneHdCount:0,
+                      discuzCount:0,
+                      isTotal:true,
+                  };
+                  sData.map((ele)=>{
+                      leafData.num += ele.num;
+                      leafData.login += ele.login;
+                      leafData.learn += ele.learn;
+                      leafData.pass += ele.pass;
+                      leafData.lessonNum += ele.lessonNum;
+                      leafData.lessonCount += ele.lessonCount;
+                      leafData.yxrzCount += ele.yxrzCount;
+                      leafData.goodHwCount += ele.goodHwCount;
+                      leafData.doneHdCount += ele.doneHdCount;
+                      leafData.discuzCount += ele.discuzCount;
+                  });
+                  if( leafData.num){
+                      leafData.loginPercent = (100*leafData.login/leafData.num).toFixed(2) ;
+                      leafData.learnPercent = (100*leafData.learn/leafData.num).toFixed(2) ;
+                      leafData.passPercent = (100*leafData.pass/leafData.num).toFixed(2);
+                  }
+                  sData.unshift(leafData);
+                  this.filterStudentData= sData;
+                  this.total = sData.length;
+                  this.onePageData =tablePagination(this.filterStudentData,this.currentPage,this.pageSize)
+                }else{
+                  let sData = this.studentData.filter((ele)=>{
+                      return (ele.workshop_id == data.id);
+                  });
+                  this.filterStudentData= sData;
+                  this.total = sData.length;
+                  this.onePageData =tablePagination(this.filterStudentData,this.currentPage,this.pageSize)
+                }
             },
-            setCheckedKeys() {
-                this.$refs.tree.setCheckedKeys([3]);
-            },
-            resetChecked() {
-                this.$refs.tree.setCheckedKeys([]);
-            }
         }
     }
 </script>
+
+<style>
+ .tableTotal{
+     color:#409eff!important;
+     background: #f0f0f0!important;
+     font-weight:bold;
+ }
+</style>

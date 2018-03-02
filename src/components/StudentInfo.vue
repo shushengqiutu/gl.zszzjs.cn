@@ -12,6 +12,16 @@
                     </el-option>
                 </el-select>
             </el-col>
+            <el-col :span="4">
+                <el-select v-model="selectWs" placeholder="请选择工作坊" :clearable="true" @clear="doSearch">
+                    <el-option
+                            v-for="item in workShops"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-col>
             <el-col :span="6">
                 <el-input v-model="serachOrder" placeholder="请输入姓名或手机" :inline="true"></el-input>
             </el-col>
@@ -256,9 +266,6 @@
     function tablePagination(data,currentPage,pageSize,){
         let startNum = ( currentPage-1 ) * pageSize;
         let endNum = startNum + pageSize;
-      /* let array = [],startNum=0,endNum = 0;
-       startNum = currentPage>1 ?(currentPage-1)*pageSize :0;
-       endNum = currentPage*pageSize;*/
         let array = data.slice(startNum, endNum);
         return array;
     }
@@ -272,11 +279,13 @@
                 location:'学员学情统计',
                 loading: true,
                 selectSchool:'',
+                selectWs:'',
                 serachOrder:'',
                 currentPage:1,
                 visiable:false,
                 userInfo:'',
                 schools:[],
+                workShops:[],
                 pageSize:20,
                 totalData:0,
                 studentData:[],
@@ -288,15 +297,31 @@
 
         },
         mounted(){
+
+            if(this.$route.query.wsid){
+                this.selectWs = this.$route.query.wsid
+            }
             let schoolData = this.$store.state.studentData;
-            let schools =[];
+            let schools =[],workShops=[];
             schoolData.map(function(ele,index){
                 schools.push({label:ele.employer, value:ele.employer});
+                workShops.push({label:ele.workshop_name, value:ele.workshop_id})
                 schools = unique(schools)
+                workShops = unique(workShops)
             });
-            this.studentData = tablePagination(this.$store.state.studentData,this.currentPage,this.pageSize);
-            this.totalData = this.$store.state.studentData.length;
+
+            if(this.$route.query.wsid){
+               let data = this.$store.state.studentData.filter(ele=>{
+                   return ele.workshop_id == this.$route.query.wsid ;
+               })
+                this.studentData = tablePagination(data,this.currentPage,this.pageSize);
+                this.totalData = data.length;
+            }else{
+                this.studentData = tablePagination(this.$store.state.studentData,this.currentPage,this.pageSize);
+                this.totalData = this.$store.state.studentData.length;
+            }
             this.schools = schools;
+            this.workShops = workShops;
             this.loading =false;
         },
         methods:{
@@ -308,13 +333,15 @@
                }
             },
             handleSizeChange(val) {
+                this.pageSize =val;
                 if(this.filtered){
-                    this.studentData = tablePagination(this.filteredData,val,this.pageSize);
+                    this.studentData = tablePagination(this.filteredData,this.currentPage,val);
                 }else{
-                    this.studentData = tablePagination(this.$store.state.studentData,val,this.pageSize);
+                    this.studentData = tablePagination(this.$store.state.studentData,this.currentPage,val);
                 }
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
                 if(this.filtered){
                     this.studentData = tablePagination(this.filteredData,val,this.pageSize);
 
@@ -327,21 +354,23 @@
                 this.userInfo = row ;
             },
             doSearch(){
-                if(!this.selectSchool && !this.serachOrder){
+                if(!this.selectSchool && !this.serachOrder && !this.selectWs){
                     this.studentData = tablePagination(this.$store.state.studentData,this.currentPage,this.pageSize);
                     this.totalData = this.$store.state.studentData.length;
-                    this.$message({type:'error',message:'请选择学校或者请输入姓名或手机进行搜索'});
+                    this.$message({type:'error',message:'请选择学校或者选择工作坊或者输入姓名或手机进行搜索'});
                     return;
                 }
-                if( this.selectSchool && this.serachOrder){
+
+                if( this.selectSchool && this.serachOrder && this.selectWs){
 
                     let data =  this.$store.state.studentData;
-
 
                     let is_number =  /^\d+$/.test(this.serachOrder)
                     if(is_number){
                         let sData = this.studentData=data.filter((ele)=>{
-                            return (ele.employer == this.selectSchool && ele.phone.startsWith(this.serachOrder))
+                            console.log(ele,'xxxxxxxxxx')
+                            console.log(this.selectWs,'111111111111')
+                            return (ele.employer == this.selectSchool && ele.phone.startsWith(this.serachOrder) && ele.workshop_id == this.selectWs)
                         });
                         this.studentData = tablePagination(sData,1,this.pageSize);
                         this.filteredData = sData;
@@ -349,7 +378,7 @@
                         this.totalData = sData.length;
                     }else{
                         let sData =data.filter((ele)=>{
-                            return (ele.employer == this.selectSchool && ele.nickname.startsWith(this.serachOrder))
+                            return (ele.employer == this.selectSchool && ele.nickname.startsWith(this.serachOrder) && ele.workshop_id == this.selectWs)
                         })
                         this.studentData = tablePagination(sData,1,this.pageSize);
                         this.filteredData = sData;
@@ -357,6 +386,29 @@
                         this.totalData = sData.length;
                     }
                 }
+
+                if(this.selectSchool  && this.selectWs &&!this.serachOrder){
+                    let data =  this.$store.state.studentData;
+                    let sData  = data.filter((ele)=>{
+                        return (ele.employer == this.selectSchool && ele.workshop_id == this.selectWs)
+                    });
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
+                }
+
+                if(this.selectSchool  && !this.selectWs &&!this.serachOrder){
+                    let data =  this.$store.state.studentData;
+                    let sData  = data.filter((ele)=>{
+                        return (ele.employer == this.selectSchool)
+                    });
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
+                }
+
 
                 if(this.selectSchool && !this.serachOrder){
                     let data =  this.$store.state.studentData;
