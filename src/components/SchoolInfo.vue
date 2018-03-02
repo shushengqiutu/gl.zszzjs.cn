@@ -223,7 +223,7 @@
         },
         methods:{
             selectData(){
-                console.log(this.input,this.select)
+
                 if(this.input&&this.select){
                     this.$store.commit('selectData',{type:this.select,value:this.input})
                 }
@@ -237,7 +237,6 @@
                 this.schoolAllData = tablePagination(this.filterSchoolData,val,this.pageSize);
             },
             test(row){
-                console.log(row)
                 this.visiable = true;
                 this.userInfo = row ;
             },

@@ -125,7 +125,7 @@
         },
         methods: {
             handleClick(tab, event) {
-                console.log(tab, event);
+
             },
             getCookie(name){
                 let arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");

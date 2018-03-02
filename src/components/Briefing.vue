@@ -78,7 +78,6 @@
         },
         methods: {
             handleLook(row){
-                console.log(row.id)
                 this.$router.push({
                     path:'/NoticeDetail',
                     query:{id:row.id},
@@ -86,7 +85,6 @@
             },
             handleDelete(row){
                 let adminId = this.$store.state.admin.id;
-                console.log(row.admin_id ==  adminId)
                 if(row.admin_id == adminId){
                     http.get({
                         url: '/gl/notice/delNotice',

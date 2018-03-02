@@ -107,7 +107,7 @@
                 filterStudentData:[],
                 onePageData:[],
                 currentPage:1,
-                pageSize:1,
+                pageSize:5,
                 total:1,
                 treeData: [],
                 defaultProps: {
@@ -219,7 +219,6 @@
                 }
             },
             lookWsInfo(row, column, cell, event){
-                console.log(row, column, cell, event)
                if(row.isTotal){
                     return;
                 }else{
