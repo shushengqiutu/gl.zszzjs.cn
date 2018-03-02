@@ -2,10 +2,10 @@
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
 
-        <el-row>
+        <el-row v-loading="loading">
          <h2 class="pro-desc h2">{{projectInfo.project_name}}项目描述：<b>({{currentProTime}})</b></h2>
             <table class="ck_table">
-                <tbody>
+                <tbody >
                 <tr style="height: 20px;">
                     <td class="w320">学员总数</td>
                     <td class="w80 bold"> {{projectInfo.num}}</td>
@@ -77,7 +77,7 @@
         data () {
             return {
                 location:'项目学情统计',
-                loading: false,
+                loading: true,
                 radio:'1',
                 projectInfo:{},
             }
@@ -94,6 +94,7 @@
                 }
             }).then(
                 (data)=>{
+                    this.loading =false;
                     this.projectInfo = data;
                 }
             ).catch(

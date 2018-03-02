@@ -62,20 +62,31 @@ select, textarea {
     line-height: 45px;
     background: #293846;
     color:#fff;
-    padding:0 60px;
+    font-size: 14px;
 }
 .header .xt-name{
     text-align: left;
+    text-indent: 100px;
 }
 .header .teacher-name{
     text-align: right;
 }
+.header .header-pro{
+    position: relative;
+    text-align:center;
+    height: 45px;
+}
+.header-selecetPro{
+    position: absolute;
+    right:0;top: 40px;
+    z-index: 9999
+}
 .header .logout{
-    margin-left: 10px;
     text-align: left;
+    height: 45px;
+    line-height: 45px;
 }
 .tac{
-    height:100%;
     height: -moz-calc(100% - (45px));
     height: -webkit-calc(100% - (45px));
     height: calc(100% - (45px));
@@ -86,10 +97,8 @@ select, textarea {
     background: #ffffff;
     margin-right: 20px;
 }
-.left-menu{
-    height: -moz-calc(100% - (40px));
-    height: -webkit-calc(100% - (40px));
-    height: calc(100% - (40px));
+.left-menu,.left{
+    height: 100%;
 }
 
 .right{
@@ -158,8 +167,7 @@ table.ck_table tr .bold{
     font-size: 11px;
 }
 .table-student{
-    height: 520px;
-    overflow-y: scroll;
+
 }
 
 .sl_Table {

@@ -5,6 +5,7 @@
         <el-row>
             <el-table
                     v-loading="loading"
+                    height="320"
                     class="table-student"
                     :data="onePageData"
                     :row-class-name="tableRowClassName"

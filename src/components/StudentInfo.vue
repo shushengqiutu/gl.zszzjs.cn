@@ -1,8 +1,8 @@
 <template>
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
-        <el-row style="margin:30px 0">
-            <el-col :span="4">
+        <el-row :gutter="20" style="margin: 10px;">
+            <el-col :span="4" >
                 <el-select v-model="selectSchool" placeholder="请选择学校" :clearable="true" @clear="doSearch">
                     <el-option
                             v-for="item in schools"
@@ -33,6 +33,7 @@
         <el-row>
             <el-table
                     class="table-student"
+                    height="320"
                     v-loading="loading"
                     :data="studentData"
                     stripe

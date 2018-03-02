@@ -9,6 +9,8 @@
 
             <el-table
                     :data="tableData"
+                    v-loading="loading"
+                    height="320"
                     class="table-student"
                     stripe
                     style="width: 100%">
@@ -63,6 +65,7 @@
                 currentPage:1,
                 pageSize:20,
                 total:0,
+                loading:true,
             }
         },
         mounted() {
@@ -125,6 +128,7 @@
                     }
                 }).then(
                     (data)=>{
+                        this.loading =false
                         this.tableData =  data.notice_list
                         this.total =  data.notice_count
                     }

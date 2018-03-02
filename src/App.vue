@@ -1,13 +1,12 @@
 <template>
-  <div id="app">
-    <el-row class="header">
-      <el-col :span="4" class="xt-name">教师研修管理系统</el-col>
-      <el-col :span="16" class="teacher-name">欢迎您:{{adminstator}}管理员</el-col>
-      <el-col :span="2" class="logout">退出</el-col>
-    </el-row>
-    <el-row class="tac">
-        <el-col :span="5" class="fl left" style="height:100%;">
-          <el-select style="width: 100%;" v-model="defaultProject" placeholder="请选择" @change="togglePro">
+  <div id="app" v-loading="loading">
+    <el-row class="header clearfix" >
+      <el-col :span="16" class="xt-name">教师研修管理系统</el-col>
+      <el-col :span="2" class="teacher-name">欢迎您:{{adminstator}}管理员</el-col>
+      <el-col :span="2" class="header-pro"  >
+        <el-button type="text" @click="allProShow = !allProShow">切换项目</el-button>
+        <div v-show="allProShow" class="header-selecetPro">
+          <el-select  v-model="defaultProject" placeholder="请选择" @change="togglePro">
             <el-option
                     v-for="(item,index) in project"
                     :key="index"
@@ -15,12 +14,19 @@
                     :value="item.id">
             </el-option>
           </el-select>
+        </div>
+      </el-col>
+      <el-col :span="4" class="logout">退出</el-col>
+    </el-row>
+
+    <el-row class="tac clearfix">
+
+        <el-col :span="isCollapse?1:4"  class="fl left" >
           <el-menu
+                  :collapse="isCollapse"
                   :default-active="$route.path"
                   router
                   class="left-menu"
-                  @open="handleOpen"
-                  @close="handleClose"
                   background-color="#293846"
                   text-color="#999c9e"
                   active-text-color="#fff">
@@ -50,13 +56,10 @@
             </el-submenu>
           </el-menu>
         </el-col>
-        <el-col :span="19" class="fl right">
+        <el-col :span="isCollapse?23:20" class="fl right">
           <router-view/>
         </el-col>
       </el-row>
-    <el-row class="footer">
-      <footer></footer>
-    </el-row>
   </div>
 </template>
 
@@ -67,8 +70,9 @@
         name:'app',
         data() {
             return {
-                isCollapse: true,
                 defaultProject:'',
+                allProShow:false,
+                loading:true,
             };
         },
         mounted(){
@@ -78,7 +82,7 @@
                 (data)=> {
                     this.$store.commit('getAdminInfo', data);
                     this.defaultProject = data.current_project.toString();
-
+                    this.loading = false;
                 }).catch(
                 e => {
                     this.$message("["+e.ecode+"]"+e.message)
@@ -91,30 +95,34 @@
           },
           project(){
               return this.$store.state.admin.projects;
+          },
+          isCollapse(){
+              return this.$store.state.navIsCollapse;
           }
         },
         methods: {
             handleOpen(key, keyPath) {
-                console.log(key, keyPath);
+                this.isCollapse = false;
             },
             handleClose(key, keyPath) {
-                console.log(key, keyPath);
+                this.isCollapse = true;
+
             },
             togglePro(value){
 
                 this.$store.commit('setProjectId',value);
-
+                this.allProShow =false;
 
                 this.$store.dispatch('fetchStudentData', {
                     url: '/gl/project/student_xueqing',
                     query: {
                         project_id: value
                     }
-                }).then(
-                    this.$router.push({
-                        path:'/'
-                    })
-                ).catch(e=>{
+                }).then(()=>{
+                      this.$router.push({
+                          path:'/'
+                      })
+                    }).catch(e=>{
                     this.$message("["+e.ecode+"]"+e.message)
                 })
 

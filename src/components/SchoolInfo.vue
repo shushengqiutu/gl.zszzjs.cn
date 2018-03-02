@@ -18,6 +18,7 @@
             <el-table
                     v-loading="loading"
                     :data="filterSchoolData"
+                    height="320"
                     stripe
                     style="width: 100%">
                 <el-table-column

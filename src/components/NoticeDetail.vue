@@ -2,7 +2,7 @@
     <div class="content">
         <Breadcrumb :location="location"></Breadcrumb>
         <div>
-            <el-row>
+            <el-row v-loading="loading">
                 <el-row>
                     <h3 class="title">{{notice.title}}</h3>
                 </el-row>
@@ -33,6 +33,7 @@
         data () {
             return {
                 location:'公告详情',
+                loading:true,
                 notice:{},
             }
         },
@@ -47,6 +48,7 @@
                 }).then(
                     (data)=>{
                        this.notice = data ;
+                      this.loading =false
                     }
                 ).catch(
                     e=> {

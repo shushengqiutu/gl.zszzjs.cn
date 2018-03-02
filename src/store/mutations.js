@@ -1,6 +1,7 @@
 export const state = {
     admin:JSON.parse(window.localStorage.getItem('adminInfo'))||{},
     studentData:JSON.parse(window.localStorage.getItem('studentData'))||{},
+    navIsCollapse:false,
 };
 export const mutations = {
 
@@ -12,6 +13,9 @@ export const mutations = {
     },
     setProjectId(state,value){
         state.admin.current_project = value ;
+    },
+    changeNavCollapse(state,value){
+        state.navIsCollapse = value ;
     },
 };
 
