@@ -5,6 +5,7 @@
         <el-row>
             <el-table
                     v-loading="loading"
+                    class="table-student"
                     :data="onePageData"
                     :row-class-name="tableRowClassName"
                     @cell-click="lookWsInfo"
@@ -67,7 +68,6 @@
                         label="互动交流次数">
                 </el-table-column>
             </el-table>
-            {{filterStudentData}}
         </el-row>
         <el-row>
             <div class="block">
@@ -75,7 +75,7 @@
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page="currentPage"
-                        :page-sizes="[1, 2, 3, 40]"
+                        :page-sizes="[5, 10, 20, 40]"
                         :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
                         :total="total">

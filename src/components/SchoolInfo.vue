@@ -136,9 +136,9 @@
 
             data.schoolName = arr[i].employer;
         }
-        data.joinRate = (data.loginCount / data.userCount).toFixed(2)*100 ;
-        data.studyRate =  (data.studyCount / data.userCount).toFixed(2)*100  ;
-        data.passRate = (data.passCount / data.userCount).toFixed(2)*100   ;
+        data.joinRate = (100*data.loginCount / data.userCount).toFixed(2);
+        data.studyRate =  (100*data.studyCount / data.userCount).toFixed(2) ;
+        data.passRate = (100*data.passCount / data.userCount).toFixed(2);
         if(data.studyCourseUserCount){
             data.lesson_count_average =  (data.studyCourseCount / data.studyCourseUserCount).toFixed(2)  ;
         }else{
@@ -228,9 +228,11 @@
                 }
             },
             handleSizeChange(val) {
+                this.pageSize = val;
                 this.schoolAllData = tablePagination(this.filterSchoolData,this.currentPage,val);
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
                 this.schoolAllData = tablePagination(this.filterSchoolData,val,this.pageSize);
             },
             test(row){

@@ -21,6 +21,7 @@
                             :value="item.value">
                     </el-option>
                 </el-select>
+
             </el-col>
             <el-col :span="6">
                 <el-input v-model="serachOrder" placeholder="请输入姓名或手机" :inline="true"></el-input>
@@ -344,7 +345,6 @@
                 this.currentPage = val;
                 if(this.filtered){
                     this.studentData = tablePagination(this.filteredData,val,this.pageSize);
-
                 }else{
                     this.studentData = tablePagination(this.$store.state.studentData,val,this.pageSize);
                 }
@@ -365,26 +365,22 @@
 
                     let data =  this.$store.state.studentData;
 
-                    let is_number =  /^\d+$/.test(this.serachOrder)
+                    let is_number =  /^\d+$/.test(this.serachOrder);
+                    let sData = [];
                     if(is_number){
-                        let sData = this.studentData=data.filter((ele)=>{
-                            console.log(ele,'xxxxxxxxxx')
-                            console.log(this.selectWs,'111111111111')
+                        sData= this.studentData=data.filter((ele)=>{
                             return (ele.employer == this.selectSchool && ele.phone.startsWith(this.serachOrder) && ele.workshop_id == this.selectWs)
                         });
-                        this.studentData = tablePagination(sData,1,this.pageSize);
-                        this.filteredData = sData;
-                        this.filtered = true;
-                        this.totalData = sData.length;
                     }else{
-                        let sData =data.filter((ele)=>{
+                        sData =data.filter((ele)=>{
                             return (ele.employer == this.selectSchool && ele.nickname.startsWith(this.serachOrder) && ele.workshop_id == this.selectWs)
                         })
-                        this.studentData = tablePagination(sData,1,this.pageSize);
-                        this.filteredData = sData;
-                        this.filtered = true;
-                        this.totalData = sData.length;
+
                     }
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
                 }
 
                 if(this.selectSchool  && this.selectWs &&!this.serachOrder){
@@ -397,7 +393,6 @@
                     this.filtered = true;
                     this.totalData = sData.length;
                 }
-
                 if(this.selectSchool  && !this.selectWs &&!this.serachOrder){
                     let data =  this.$store.state.studentData;
                     let sData  = data.filter((ele)=>{
@@ -409,38 +404,76 @@
                     this.totalData = sData.length;
                 }
 
-
-                if(this.selectSchool && !this.serachOrder){
+                if(!this.selectSchool  && this.selectWs &&!this.serachOrder){
                     let data =  this.$store.state.studentData;
                     let sData  = data.filter((ele)=>{
-                        return ele.employer == this.selectSchool
+                        return (ele.workshop_id == this.selectWs)
                     });
                     this.studentData = tablePagination(sData,1,this.pageSize);
                     this.filteredData = sData;
                     this.filtered = true;
                     this.totalData = sData.length;
                 }
-                if(!this.selectSchool && this.serachOrder){
+
+                if(this.selectSchool  && !this.selectWs && this.serachOrder){
                     let data =  this.$store.state.studentData;
-                    let is_number =  /^\d+$/.test(this.serachOrder)
+                    let is_number =  /^\d+$/.test(this.serachOrder);
+                    let sData = [];
                     if(is_number){
-                        let sData = data.filter((ele)=>{
-                            return ele.phone.startsWith(this.serachOrder)
-                        })
-                        this.studentData = tablePagination(sData,1,this.pageSize);
-                        this.filteredData = sData;
-                        this.filtered = true;
-                        this.totalData = sData.length;
-                    }else{
-                        let sData = data.filter((ele)=>{
-                            return ele.nickname.startsWith(this.serachOrder)
+                        sData  = data.filter((ele)=>{
+                            return (ele.employer == this.selectSchool && ele.phone.startsWith(this.serachOrder) )
                         });
-                        this.studentData = tablePagination(sData,1,this.pageSize);
-                        this.filteredData = sData;
-                        this.filtered = true;
-                        this.totalData = sData.length;
+                    }else{
+                        sData =data.filter((ele)=>{
+                            return (ele.employer == this.selectSchool && ele.nickname.startsWith(this.serachOrder) )
+                        })
                     }
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
                 }
+
+                if(!this.selectSchool  && this.selectWs && this.serachOrder){
+                    let data =  this.$store.state.studentData;
+                    let is_number =  /^\d+$/.test(this.serachOrder);
+                    let sData = [];
+                    if(is_number){
+                        sData  = data.filter((ele)=>{
+                            return (ele.workshop_id == this.selectWs && ele.phone.startsWith(this.serachOrder) )
+                        });
+                    }else{
+                        sData =data.filter((ele)=>{
+                            return (ele.workshop_id == this.selectWs && ele.nickname.startsWith(this.serachOrder) )
+                        })
+                    }
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
+                }
+
+                if(!this.selectSchool  && !this.selectWs && this.serachOrder){
+                    let data =  this.$store.state.studentData;
+                    let is_number =  /^\d+$/.test(this.serachOrder);
+                    let sData = [];
+                    if(is_number){
+                        sData  = data.filter((ele)=>{
+                            return ( ele.phone.startsWith(this.serachOrder) )
+                        });
+                    }else{
+                        sData =data.filter((ele)=>{
+                            return ( ele.nickname.startsWith(this.serachOrder) )
+                        })
+                    }
+                    this.studentData = tablePagination(sData,1,this.pageSize);
+                    this.filteredData = sData;
+                    this.filtered = true;
+                    this.totalData = sData.length;
+                }
+
+
+
             }
         }
     }

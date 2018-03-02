@@ -2,7 +2,9 @@ const localStoragePlugin = store => {
     store.subscribe((mutation, state) => {
         console.log( 'mutation', mutation, 'state', state )
 
-        if( mutation.type == 'getAdminInfo' ) {
+
+
+        if( mutation.type == 'getAdminInfo' || mutation.type == 'setProjectId') {
             window.localStorage.setItem("adminInfo", JSON.stringify(state.admin))
         }
 

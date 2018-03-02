@@ -105,10 +105,12 @@
 
             },
             handleSizeChange(val) {
+                this.pageSize = val;
                 let id = this.$store.state.admin.current_project;
                 this.getNoticeList(id,this.currentPage,val)
             },
             handleCurrentChange(val) {
+                this.currentPage = val;
                 let id = this.$store.state.admin.current_project;
                 this.getNoticeList(id,val,this.pageSize)
             },

@@ -6,13 +6,17 @@
 
 <script>
     import Breadcrumb from './Breadcrumb';
+    import http from '../lib/http'
     export default {
         name: 'Index',
         components:{Breadcrumb},
         data () {
             return {
-                location:''
+                location:'',
             }
-        }
+        },
+        mounted(){
+        },
+
     }
 </script>
